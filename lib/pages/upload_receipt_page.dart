@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'track_page.dart';
 
 class UploadReceiptPage extends StatefulWidget {
   const UploadReceiptPage({super.key});
@@ -17,6 +18,7 @@ class _UploadReceiptPageState extends State<UploadReceiptPage> with SingleTicker
   List<PlatformFile> _bulkFiles = [];
   int? _selectedMonth;
   final ImagePicker _imagePicker = ImagePicker();
+  bool _isSubmitting = false;
 
   static const List<String> months = [
     'January',
@@ -255,13 +257,30 @@ class _UploadReceiptPageState extends State<UploadReceiptPage> with SingleTicker
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed:
-                      _singleMonthFiles.isNotEmpty
-                          ? () {
-                            // TODO: Implement submit logic
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Submitted!')));
+                      _singleMonthFiles.isNotEmpty && !_isSubmitting
+                          ? () async {
+                            setState(() {
+                              _isSubmitting = true;
+                            });
+
+                            // Simulate processing time
+                            await Future.delayed(const Duration(seconds: 3));
+
+                            if (mounted) {
+                              // Create dummy receipt data
+                              final receipt = ReceiptData(merchant: '7E', amount: 45.00, date: DateTime.now(), color: const Color(0xFF4CAF50));
+                              Navigator.pop(context, receipt);
+                            }
                           }
                           : null,
-                  child: const Text('Submit'),
+                  child:
+                      _isSubmitting
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                          )
+                          : const Text('Submit'),
                 ),
               ],
             ),
@@ -340,13 +359,28 @@ class _UploadReceiptPageState extends State<UploadReceiptPage> with SingleTicker
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed:
-                      _bulkFiles.isNotEmpty
-                          ? () {
-                            // TODO: Implement bulk submit logic
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bulk submitted!')));
+                      _bulkFiles.isNotEmpty && !_isSubmitting
+                          ? () async {
+                            setState(() {
+                              _isSubmitting = true;
+                            });
+
+                            // Simulate processing time
+                            await Future.delayed(const Duration(seconds: 3));
+
+                            if (mounted) {
+                              Navigator.pop(context); // Navigate back to track page
+                            }
                           }
                           : null,
-                  child: const Text('Submit'),
+                  child:
+                      _isSubmitting
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                          )
+                          : const Text('Submit'),
                 ),
               ],
             ),

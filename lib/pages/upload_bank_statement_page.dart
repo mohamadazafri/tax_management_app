@@ -176,8 +176,7 @@ class _UploadBankStatementPageState extends State<UploadBankStatementPage> with 
                   onPressed:
                       _selectedFileName != null
                           ? () {
-                            // TODO: Implement submit logic
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Submitted!')));
+                            Navigator.pop(context, 'august.pdf');
                           }
                           : null,
                   child: const Text('Submit'),
